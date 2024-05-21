@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DoctorPillMe.Views.PillPage"
+             Title="PillPage">
+    <StackLayout>
+        <Label Text="Nimi"/>
+        <Entry Text="{Binding Name}" x:Name="nimi"/>
+        <Label Text="Kirjeldus"/>
+        <Entry Text="{Binding Description}"/>
+        <Label Text="Kogus"/>
+        <Entry Text="{Binding Amount}" Keyboard="Numeric"/>
+        <Label Text="Üksus"/>
+        <Entry Text="{Binding Unit}" x:Name="entryUnit" IsEnabled="False"/>
+        <ListView x:Name="listUnits" HeightRequest="50" VerticalOptions="Start" />
+        <Label Text="Hind"/>
+        <Entry Text="{Binding Price}" Keyboard="Numeric"/>
+        <Label Text="Privaatne" />
+        <CheckBox IsChecked="{Binding Private}"/>
+        <HorizontalStackLayout>
+            <Button Text="Salvesta" Clicked="SavePill" WidthRequest="130" TextColor="White"/>
+            <Button Text="Kustuta" Clicked="DeletePill" WidthRequest="130" TextColor="White"/>
+            <Button Text="Tühista" Clicked="Cancel" WidthRequest="130" TextColor="White"/>
+        </HorizontalStackLayout>
+    </StackLayout>
+</ContentPage>
