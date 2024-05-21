@@ -1,4 +1,5 @@
 ﻿using DoctorPillMe.Models;
+using Plugin.LocalNotification;
 
 namespace DoctorPillMe.Views;
 
@@ -12,7 +13,7 @@ public partial class MainPage : ContentPage
 
     [Obsolete]
     public MainPage()
-	{
+    {
         loginLabel = new Label { Text = "Kasutaja nimi"};
         passwordLabel = new Label{ Text = "Parool"};
         passwordVisible = new Label { Text = "Näita parool" };
@@ -31,16 +32,17 @@ public partial class MainPage : ContentPage
     [Obsolete]
     private async void Sisse_Clicked(object sender, EventArgs e)
     {
-        try
+        while(!await LocalNotificationCenter.Current.AreNotificationsEnabled())
         {
-            user = App.Database.GetUsers().Where(x => x.Name == login.Text).ToArray()[0];
-            if (user != null && PasswordSecurity.VerifyPassword(password.Text, user.HashPassword, user.Salt))
-                Pages();
+            await LocalNotificationCenter.Current.RequestNotificationPermission();
         }
-        catch (Exception)
+        NotificationRequest request = new NotificationRequest
         {
-            await DisplayAlert("Viga", "Vale kasutaja nimi või parool", "Tühista");
-        }
+            Title = "Test Notification",
+            Description = "This is a test notification",
+            ReturningData = "Dummy data",
+        };
+        await LocalNotificationCenter.Current.Show(request);
     }
 
     private void PasswordVisibleBox_CheckedChanged(object sender, CheckedChangedEventArgs e) => password.IsPassword = !passwordVisibleBox.IsChecked;
