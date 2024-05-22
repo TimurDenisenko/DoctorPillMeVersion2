@@ -32,17 +32,16 @@ public partial class MainPage : ContentPage
     [Obsolete]
     private async void Sisse_Clicked(object sender, EventArgs e)
     {
-        while(!await LocalNotificationCenter.Current.AreNotificationsEnabled())
+        try
         {
-            await LocalNotificationCenter.Current.RequestNotificationPermission();
+            user = App.Database.GetUsers().Where(x => x.Name == login.Text).ToArray()[0];
+            if (user != null && PasswordSecurity.VerifyPassword(password.Text, user.HashPassword, user.Salt))
+                Pages();
         }
-        NotificationRequest request = new NotificationRequest
+        catch (Exception)
         {
-            Title = "Test Notification",
-            Description = "This is a test notification",
-            ReturningData = "Dummy data",
-        };
-        await LocalNotificationCenter.Current.Show(request);
+            await DisplayAlert("Viga", "Vale kasutaja nimi või parool", "Tühista");
+        }
     }
 
     private void PasswordVisibleBox_CheckedChanged(object sender, CheckedChangedEventArgs e) => password.IsPassword = !passwordVisibleBox.IsChecked;

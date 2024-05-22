@@ -29,12 +29,41 @@ public partial class ReminderPage : ContentPage
         pillsList.ItemSelected += (s, e) => pillEntry.Text = e.SelectedItem.ToString();
     }
 
-    private void SaveReminder(object sender, EventArgs e)
+    private async void SaveReminder(object sender, EventArgs e)
     {
         Reminder Reminder = (Reminder)BindingContext;
         if (new string[] { Reminder.User, Reminder.Pill, Reminder.Count == 0 ? "" : "fill" }.All(x => !string.IsNullOrEmpty(x)))
+        {
             App.Database.SaveReminder(Reminder);
-        Navigation.PopAsync();
+
+            NotificationRequest request = new NotificationRequest
+            {
+                NotificationId = 1337,
+                Title = "MEDIUM",
+                Subtitle = "Hello! I'm Erdal",
+                Description = "Local Push Notification",
+                BadgeNumber = 1,
+                Schedule = new NotificationRequestSchedule
+                {
+                    NotifyTime = new DateTime(GetNextWeekday((DayOfWeek)Enum.Parse(new DayOfWeek().GetType(), Reminder.Day),DateTime.Now), new TimeOnly(Reminder.Time.Ticks)),
+                    RepeatType = NotificationRepeat.Weekly
+                },
+                Android = new Plugin.LocalNotification.AndroidOption.AndroidOptions
+                {
+                    Priority = Plugin.LocalNotification.AndroidOption.AndroidPriority.Max,
+                    
+                }
+            };
+
+            await LocalNotificationCenter.Current.Show(request);
+        }
+        await Navigation.PopAsync();
+    }
+    private static DateOnly GetNextWeekday(DayOfWeek day, DateTime start)
+    {
+        int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
+        DateTime dt = start.AddDays(daysToAdd);
+        return new DateOnly(dt.Year,dt.Month,dt.Day);
     }
 
     private void DeleteReminder(object sender, EventArgs e)
