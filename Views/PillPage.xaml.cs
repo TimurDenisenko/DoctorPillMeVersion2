@@ -32,7 +32,7 @@ public partial class PillPage : ContentPage
     private void SavePill(object sender, EventArgs e)
     {
         Pill Pill = (Pill)BindingContext;
-        if (new string[] { Pill.Name, Pill.Description, Pill.Amount == 0 ? "" : "fill", Pill.Unit, Pill.Price == 0 ? "" : "fill", Pill.Private.ToString() }.All(x => !string.IsNullOrEmpty(x)))
+        if (new string[] { Pill.Name, Pill.Description, Pill.Amount == 0 ? "" : "fill", Pill.Unit, Pill.Price == 0 ? "" : "fill" }.All(x => !string.IsNullOrEmpty(x)))
             App.Database.SavePill(Pill);
         Navigation.PopAsync();
     }

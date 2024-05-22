@@ -38,26 +38,46 @@ public partial class ReminderPage : ContentPage
 
             NotificationRequest request = new NotificationRequest
             {
-                NotificationId = 1337,
-                Title = "MEDIUM",
-                Subtitle = "Hello! I'm Erdal",
-                Description = "Local Push Notification",
-                BadgeNumber = 1,
+                NotificationId = Reminder.Id,
+                Title = "DoctorPillMe",
+                Subtitle = "Aeg võtta pill",
+                Description = Reminder.Pill,
                 Schedule = new NotificationRequestSchedule
                 {
-                    NotifyTime = new DateTime(GetNextWeekday((DayOfWeek)Enum.Parse(new DayOfWeek().GetType(), Reminder.Day),DateTime.Now), new TimeOnly(Reminder.Time.Ticks)),
+                    NotifyTime = new DateTime(GetNextWeekday(ChangeLanguage(Reminder.Day), DateTime.Now), new TimeOnly(Reminder.Time.Ticks)),
                     RepeatType = NotificationRepeat.Weekly
                 },
                 Android = new Plugin.LocalNotification.AndroidOption.AndroidOptions
                 {
                     Priority = Plugin.LocalNotification.AndroidOption.AndroidPriority.Max,
-                    
                 }
             };
 
             await LocalNotificationCenter.Current.Show(request);
         }
         await Navigation.PopAsync();
+    }
+    private DayOfWeek ChangeLanguage(string week)
+    {
+        switch (week)
+        {
+            case "Esmaspäev":
+                return DayOfWeek.Monday;
+            case "Teisipäev":
+                return DayOfWeek.Tuesday;
+            case "Kolmapäev":
+                return DayOfWeek.Wednesday;
+            case "Neljapäev":
+                return DayOfWeek.Thursday;
+            case "Reede":
+                return DayOfWeek.Friday;
+            case "Laupäev":
+                return DayOfWeek.Saturday;
+            case "Pühapäev":
+                return DayOfWeek.Sunday;
+            default:
+                return DayOfWeek.Sunday;
+        }
     }
     private static DateOnly GetNextWeekday(DayOfWeek day, DateTime start)
     {

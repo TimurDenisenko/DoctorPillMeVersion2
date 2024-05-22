@@ -72,16 +72,6 @@ namespace DoctorPillMe.ViewModels
                 OnPropertyChanged("Price");
             }
         }
-        public bool Private
-        {
-            get { return Pill.Private; }
-            set
-            {
-                if (Pill.Private == value) return;
-                Pill.Private = value;
-                OnPropertyChanged("Private");
-            }
-        }
         public bool IsValid
         {
             get
